@@ -118,7 +118,7 @@ Sure! Here's a **concise writeup for Bandit levels 0 to 27**, perfect for a GitH
 
 * Wrote script to get response from a daemon running on port 30002 with correct header.
   
-**I wasn't able to go further but i will complete all of them soon or already done by the time you are reading as they are really exciting and not that hard i think.
+**I wasn't able to go further but i will complete all of them soon or already done by the time you are reading as they are really exciting and not that hard i think.**
 
 
 ---
