@@ -181,6 +181,8 @@ Create a command-line multi-user to-do list manager with login protection.
 - Managing secure user data without storing plain-text passwords.
 - File handling and persistence per user.
 - Building a clean, interactive CLI menu for multiple roles.
+- At first i was only trying to make it for a single user but while i was glaring at the features for a usr i figured it won't be that hard to write it for multiple users once i can manage files and later on added more features like using getpass and cryptography.
+- I wanted to make it more better by hiding the created tasks of user in a way that noone can see unless provide the password, i will surely complete it soon.
 
 ---
 
