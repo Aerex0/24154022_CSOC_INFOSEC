@@ -215,7 +215,7 @@ Build a basic interpreter for a custom toy programming language.
 - This same rule applies to all the commands i implemented and i wish i could have made it more which i will now for my own learning.
 ---
 
-### 🔴 Task 4: **Sorting Routine ** 
+### 🔴 Left Task: **Sorting Routine ** 
 - I became focused in other tasks as they were more exciting and since i have implemented this sorting a lot of times in CP and my 2nd semester exams as i really didn't do it although i know it may cost me points.
 
 ## ✅ Final Thoughts
