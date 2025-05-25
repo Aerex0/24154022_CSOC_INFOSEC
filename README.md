@@ -215,6 +215,9 @@ Build a basic interpreter for a custom toy programming language.
 - This same rule applies to all the commands i implemented and i wish i could have made it more which i will now for my own learning.
 ---
 
+### 🔴 Task 4: **Sorting Routine ** 
+- I became focused in other tasks as they were more exciting and since i have implemented this sorting a lot of times in CP and my 2nd semester exams as i really didn't do it although i know it may cost me points.
+
 ## ✅ Final Thoughts
 
 This set of CSOC tasks helped me dive deep into:
@@ -224,5 +227,5 @@ This set of CSOC tasks helped me dive deep into:
 - Language design and interpreters
 
 Feel free to check out the code for each task in the respective `.py` files in this repo. 🎉
-
+** Although i haven't submitted the codes in an other language than C but i am sure my hands have gone through C more than python in this semester if i was able to do them in python then in C, they won't be hard to do as nothing changes the way i see it, the logic of each line will remain same.**
 ---
