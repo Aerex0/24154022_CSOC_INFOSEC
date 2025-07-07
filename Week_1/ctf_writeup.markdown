@@ -380,7 +380,190 @@ The grep command reveals the flag embedded in the output image:
 
 ##### Writeup:
 
-*Placeholder for your solutions to the Sakura Room challenges.*
+The Sakura Room, created by OSINT Dojo on TryHackMe, is a beginner-friendly OSINT challenge designed to test various open-source intelligence techniques. The scenario involves a cyberattack on OSINT Dojo, with an image (`sakurapwnedletter.svg`) left by the attacker as a clue. The goal is to identify the attacker through passive OSINT methods. Below are the solutions to key tasks.
+
+---
+
+### Task 1: Introduction
+
+##### Objective:
+Read the introduction and type the given phrase to begin.
+
+##### Solution:
+The introduction describes a cyberattack on OSINT Dojo, with an SVG image left by the attacker. The task requires entering the phrase:
+
+```
+Let's Go!
+```
+
+This unlocks the subsequent tasks.
+
+---
+
+### Task 2: Tip-Off
+
+##### Objective:
+What username does the attacker go by?
+
+##### Solution:
+The provided image is an SVG file hosted on GitHub: `https://raw.githubusercontent.com/OsintDojo/public/3f178408909bc1aae7ea2f51126984a8813b0901/sakurapwnedletter.svg`. Since SVG files are XML-based, we inspect the source code:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ wget https://raw.githubusercontent.com/OsintDojo/public/3f178408909bc1aae7ea2f51126984a8813b0901/sakurapwnedletter.svg
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ cat sakurapwnedletter.svg
+```
+
+The file’s metadata includes a file path: `/home/SakuraSnowAngelAiko/Desktop/pwnedletter.png`, revealing the attacker’s username:
+
+**`SakuraSnowAngelAiko`**
+
+**Note**: The SVG also contains binary in the background, which translates to “A picture is worth 1000 words but metadata is worth far more” using an online binary-to-text translator (e.g., RapidTables), hinting at metadata analysis.[](https://medium.com/%40CarsonS/tryhackme-sakura-room-9bd383654f7e)[](https://ghi11.medium.com/try-hack-me-sakura-room-write-up-6eff6f6d5a80)
+
+---
+
+### Task 3: Reconnaissance
+
+##### Objective:
+What is the full email address used by the attacker?
+
+##### Solution:
+Using the username `SakuraSnowAngelAiko`, we search Google for associated accounts:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ firefox "https://www.google.com/search?q=SakuraSnowAngelAiko"
+```
+
+This reveals a GitHub profile: `https://github.com/sakurasnowangelaiko`. Browsing the repositories, we find a `PGP` repository containing a `publickey` file. Downloading it:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ wget https://github.com/sakurasnowangelaiko/PGP/blob/main/publickey
+```
+
+Inspecting the file with `gpg`:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ gpg publickey
+gpg: WARNING: no command supplied. Trying to guess what you mean ...
+pub   rsa3072 2021-01-23 [SC] [expires: 2023-01-22]
+      A6519F273BF88E9126B0F4C5ECDD0FD294110450
+uid   SakuraSnowAngel83@protonmail.com
+sub   rsa3072 2021-01-23 [E] [expires: 2023-01-22]
+```
+
+The `uid` field reveals the email:
+
+**`SakuraSnowAngel83@protonmail.com`**
+
+**Note**: The PGP key provides a direct clue, as public keys often include email addresses.[](https://rbbck.github.io/writeup/2022/06/24/thm_sakura_room/)[](https://ghi11.medium.com/try-hack-me-sakura-room-write-up-6eff6f6d5a80)
+
+---
+
+### Task 4: Reconnaissance (Continued)
+
+##### Objective:
+What is the attacker’s current Twitter handle?
+
+##### Solution:
+Searching for `SakuraSnowAngelAiko` on Twitter reveals a tweet: “Silly me, I forgot to introduce myself! Hi there! I'm @AikoAbe3!”. Following this lead, we check the Twitter profile `@AikoAbe3`, which redirects to `@SakuraLoverAiko`, indicating a handle change. The profile picture matches the GitHub account, confirming it’s the same user.
+
+The current Twitter handle is:
+
+**`@SakuraLoverAiko`**
+
+**Note**: The tweet history and profile consistency help verify the handle.[](https://infosecwriteups.com/osint-dojo-sakura-37c0fded88b?gi=dda1a5cbe09a)[](https://rbbck.github.io/writeup/2022/06/24/thm_sakura_room/)
+
+---
+
+### Task 5: Taunt
+
+##### Objective:
+What is the URL for the location where the attacker saved their WiFi SSIDs and passwords?
+
+##### Solution:
+In the `@SakuraLoverAiko` Twitter account, a tweet mentions saving WiFi SSIDs and passwords on the “Dark Web” with a partial URL: `http://depastedihrn3jtw.onion/show.php?md5=`. The tweet includes an MD5 hash: `0a5c6e136a98a60b8a21643ce8c15a74`. Combining these:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ torsocks curl http://depastedihrn3jtw.onion/show.php?md5=0a5c6e136a98a60b8a21643ce8c15a74
+```
+
+The full URL is:
+
+**`http://depastedihrn3jtw.onion/show.php?md5=0a5c6e136a98a60b8a21643ce8c15a74`**
+
+**Note**: The dark web site may be unstable, but the hint provides the MD5 hash directly.[](https://infosecwriteups.com/osint-dojo-sakura-37c0fded88b?gi=dda1a5cbe09a)[](https://dropn0w.medium.com/tryhackme-sakura-beginner-friendly-49e844198368)[](https://rbbck.github.io/writeup/2022/06/24/thm_sakura_room/)
+
+---
+
+### Task 6: Taunt (Continued)
+
+##### Objective:
+What is the BSSID for the attacker’s Home WiFi?
+
+##### Solution:
+The dark web URL lists WiFi SSIDs and passwords, including the attacker’s home SSID (e.g., `SakuraHome`). Using [WiGLE](https://wigle.net), we create an account and search for the SSID:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ firefox https://wigle.net
+```
+
+Filtering for `SakuraHome` and zooming to Japan (per the challenge context), we find a single result in Hirosaki, Japan, with the BSSID:
+
+**`84:af:ec:34:fc:f8`**
+
+**Note**: WiGLE’s advanced search requires an account, and the map must be manually adjusted to Japan to locate the purple dot.[](https://github.com/a3r0id/TryHackMe-Sakura-Room-Writeup)[](https://rbbck.github.io/writeup/2022/06/24/thm_sakura_room/)[](https://ghi11.medium.com/try-hack-me-sakura-room-write-up-6eff6f6d5a80)
+
+---
+
+### Task 7: Cryptocurrency
+
+##### Objective:
+What cryptocurrency does the attacker own a wallet for? What is the attacker’s cryptocurrency wallet address?
+
+##### Solution:
+Returning to the GitHub profile `sakurasnowangelaiko`, we find a repository named `ETH`, indicating Ethereum. Entering “Ethereum” as the cryptocurrency is accepted. Checking the `ETH` repository’s `miningscript` file history:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ firefox https://github.com/sakurasnowangelaiko/ETH/commits/main/miningscript
+```
+
+The commit history reveals the wallet address:
+
+**Cryptocurrency**: `Ethereum`  
+**Wallet Address**: `0xa102397dbeeBeFD8cD2F73A89122fCdB53abB6ef`
+
+**Note**: The `ETH` repository name is a direct hint, and commit history often contains sensitive data like wallet addresses.[](https://rbbck.github.io/writeup/2022/06/24/thm_sakura_room/)[](https://ghi11.medium.com/try-hack-me-sakura-room-write-up-6eff6f6d5a80)
+
+---
+
+### Task 8: Geolocation
+
+##### Objective:
+What airport is closest to the location the attacker shared a photo from prior to getting on their flight? What lake can be seen in the map shared by the attacker as they were on their final flight home? What city does the attacker likely consider “home”?
+
+##### Solution:
+On the `@SakuraLoverAiko` Twitter account, a tweet includes a photo of a Japan Airlines (JAL) First Class Sakura Lounge. Searching for “JAL First Class Sakura Lounge sign” on Google or Yandex:
+
+```shell
+aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ firefox "https://www.google.com/search?q=JAL+First+Class+Sakura+Lounge+sign"
+```
+
+The image matches the lounge at Tokyo Haneda Airport (HND). The airport code is:
+
+**`HND`**
+
+Another tweet includes a map showing a lake during the attacker’s flight. Using Google Maps and the Hirosaki context from the BSSID, we identify the lake as:
+
+**`Lake Inawashiro`**
+
+The BSSID from Task 6 was located in Hirosaki, Japan, suggesting it’s the attacker’s home city:
+
+**`Hirosaki`**
+
+**Note**: Reverse image search (e.g., Yandex or TinEye) helps identify the lounge, and the lake is found by cross-referencing the map with Hirosaki’s geography.[](https://samanthactf.medium.com/tryhackme-sakura-room-ef53e648daf9)[](https://medium.com/%40CarsonS/tryhackme-sakura-room-9bd383654f7e)[](https://ghi11.medium.com/try-hack-me-sakura-room-write-up-6eff6f6d5a80)
+
+---
+
+**Final Notes**: The Sakura Room is an engaging OSINT challenge that progresses from a single SVG image to uncovering the attacker’s identity, social media, cryptocurrency details, and geolocation. Passive OSINT techniques like metadata analysis, social media reconnaissance, and reverse image search are key. The room emphasizes careful data aggregation to avoid missing leads. Contact `@OSINTDojo` on Twitter for queries.[](https://github.com/a3r0id/TryHackMe-Sakura-Room-Writeup)[](https://www.secjuice.com/tryhackme-sakura-room-walkthrough/)[](https://www.jalblas.com/blog/tryhackme-sakura-room-walkthrough/)
 
 ---
 
