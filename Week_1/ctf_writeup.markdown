@@ -1,8 +1,6 @@
 # Writeups for Week-1 Forensics
 
-### Hope you had fun with the challenges, you can always contact me at discord (`aerex.`) or @INFOSEC on CSOC server for any queries!
-
----
+# PICO-CTF
 
 ### Matryoshka Doll
 
@@ -392,16 +390,16 @@ The grep command reveals the flag embedded in the output image:
 
 ##### Writeup:
 
-*Placeholder for your solution to Gralhix OSINT Exercise 6.*
+*I just searched the image on google and came across this Wiki page https://en.m.wikipedia.org/wiki/File:WaziriyaAutobombeIrak.jpg. This clears the statement that this image is from iraq and not pakistan.*
 
 ### Exercise 4
 
 ##### Writeup:
 
-*Placeholder for your solution to Gralhix OSINT Exercise 4.*
+*I just searched the image on google and came across the official page of the resort https://oanresort.wixsite.com/chuuk. The location is Oan Resort, Oan Islands, Micronesia. Then i used google maps to get the coordinates (7.362590, 151.756325) and using the street view i can get the direction the camera was facing which is North-West.*
 
 ### Exercise 3
 
 ##### Writeup:
 
-*Placeholder for your solution to Gralhix OSINT Exercise 3.*
+*I searched the image on google and the come across the web pages revealing the name of the location 'the presidential complex' and the coordinates can be retreived using google maps 39.93114, 32.79967 *
