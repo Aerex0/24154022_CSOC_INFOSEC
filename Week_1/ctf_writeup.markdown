@@ -15,14 +15,14 @@ Matryoshka dolls are a set of wooden dolls of decreasing size placed one inside 
 The challenge name **Matryoshka Doll** suggests a layered structure, hinting at multiple files embedded within each other. The provided file is a PNG image, so we first analyze its contents:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ file dolls.jpg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ file dolls.jpg 
 dolls.jpg: PNG image data, 594 x 1104, 8-bit/color RGBA, non-interlaced
 ```
 
 Using `binwalk` to inspect for embedded files:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk dolls.jpg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk dolls.jpg 
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -35,13 +35,13 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 The output reveals a zip archive containing `base_images/2_c.jpg`. We extract it:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e dolls.jpg
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e dolls.jpg
 ```
 
 This creates `_dolls.jpg.extracted` with `4286C.zip` and a `base_images` folder containing `2_c.jpg`. We navigate to `base_images` and analyze `2_c.jpg`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images$ binwalk 2_c.jpg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images$ binwalk 2_c.jpg 
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -55,7 +55,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 Extracting `2_c.jpg` with `binwalk -e 2_c.jpg` yields `2DD3B.zip` and `3_c.jpg`. We continue with `3_c.jpg`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images$ binwalk -e 3_c.jpg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images$ binwalk -e 3_c.jpg 
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -65,7 +65,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 Extracting `3_c.jpg` gives `1E2D6.zip` and `4_c.jpg`. Finally, we analyze `4_c.jpg`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images/_3_c.jpg.extracted/base_images$ binwalk -e 4_c.jpg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images/_3_c.jpg.extracted/base_images$ binwalk -e 4_c.jpg 
 
 DECIMAL       HEXADECIMAL     DESCRIPTION
 --------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ DECIMAL       HEXADECIMAL     DESCRIPTION
 Extracting `4_c.jpg` produces `136DA.zip` and `flag.txt`. Reading `flag.txt`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images/_3_c.jpg.extracted/base_images/_4_c.jpg.extracted$ cat flag.txt 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images/_3_c.jpg.extracted/base_images/_4_c.jpg.extracted$ cat flag.txt 
 picoCTF{96fac089316e094d41ea046900197662}
 ```
 
@@ -96,14 +96,14 @@ I've hidden a flag in this file. Can you find it?
 The file is a `.pptm` (PowerPoint with macros), suggesting hidden data in its structure or macros. Since `.pptm` files are zip archives, we rename it to `.zip` and extract its contents:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ mv Forensics\ is\ fun.pptm a.zip
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ unzip a.zip
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ mv Forensics\ is\ fun.pptm a.zip
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ unzip a.zip
 ```
 
 This extracts numerous files, including `ppt/slideMasters/hidden`. We inspect it with `strings`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ strings ppt/slideMasters/hidden 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ strings ppt/slideMasters/hidden 
 ZmxhZzoGcG1jb0NURntEMWRfYV9rZXJCM3X3BwdHNhfQ
 ```
 
@@ -133,13 +133,13 @@ Download this image file and find the flag.
 The file is an SVG image, which is XML-based. We inspect its contents:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ cat drawing.flag.svg
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ cat drawing.flag.svg
 ```
 
 The SVG contains graphical elements and a `<text>` section with `<tspan>` elements. We extract the text:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ grep tspan drawing.flag.svg 
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ grep tspan drawing.flag.svg 
        id="text3723"><tspan
          id="tspan3748">p </tspan><tspan
          id="tspan3754">i </tspan><tspan
@@ -176,13 +176,13 @@ Ron just found his own copy of advanced potion making, but its been corrupted by
 The challenge suggests a corrupted file, likely an image. We inspect it using `xxd`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ xxd advanced-potion-making | head
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ xxd advanced-potion-making | head
 ```
 
 The hex dump shows a corrupted PNG header (e.g., incorrect magic bytes instead of `89 50 4E 47 0D 0A 1A 0A`). We fix the header using a hex editor:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ hexedit advanced-potion-making
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ hexedit advanced-potion-making
 ```
 
 We set the first 8 bytes to `89 50 4E 47 0D 0A 1A 0A`. Saving the file restores the PNG, revealing a red image. We use an online CTF tool like [Aperisolve](https://www.aperisolve.com/) to analyze for steganography (e.g., LSB or color channel extraction), which reveals the flag:
@@ -206,97 +206,97 @@ This file was found among some files marked confidential but my pdf reader canno
 The file `Flag.pdf` doesn’t open as a PDF, suggesting it’s misnamed. We treat it as a shell script:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ cp Flag.pdf Flag.sh
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ chmod +x Flag.sh
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ ./Flag.sh
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ cp Flag.pdf Flag.sh
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ chmod +x Flag.sh
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ ./Flag.sh
 ```
 
 This generates a file named `flag`. Checking its type:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ file flag
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ file flag
 flag: current ar archive
 ```
 
 Extracting with `binwalk`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e flag
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e flag
 ```
 
 This creates `_flag.extracted` with a file named `64`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted$ file 64
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted$ file 64
 64: gzip compressed data
 ```
 
 Extracting `64`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted$ binwalk -e 64
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted$ binwalk -e 64
 ```
 
 This produces `flag` in `_64.extracted`:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag
 flag: lzip compressed data
 ```
 
 Since `binwalk` fails to extract lzip, we use:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzip -d -k flag
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzip -d -k flag
 ```
 
 This creates `flag.out`, which is LZ4 compressed:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag.out
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag.out
 flag.out: LZ4 compressed data
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lz4 -d flag.out flag2.out
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lz4 -d flag.out flag2.out
 ```
 
 The resulting `flag2.out` is LZMA compressed:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag2.out
+4:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag2.out
 flag2.out: LZMA compressed data
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag2.out flag2.lzma
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzma -d -k flag2.lzma
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag2.out flag2.lzma
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzma -d -k flag2.lzma
 ```
 
 This creates `flag2`, which is LZOP compressed:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag2
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag2
 flag2: LZOP compressed data
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag2 flag2.lzop
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzop -d -k flag2.lzop -o flag3
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag2 flag2.lzop
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzop -d -k flag2.lzop -o flag3
 ```
 
 The resulting `flag3` is LZIP compressed:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag3
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag3
 flag3: LZIP compressed data
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzip -d -k flag3
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzip -d -k flag3
 ```
 
 This creates `flag3.out`, which is XZ compressed:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag3.out
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag3.out
 flag3.out: XZ compressed data
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag3.out flag4.xz
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ xz -d -k flag4.xz
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag3.out flag4.xz
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ xz -d -k flag4.xz
 ```
 
 The final `flag4` is ASCII text containing a hex string:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ cat flag4
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ cat flag4
 7069636f4354467b66316c656e406d335f6d406e3170756c407431306e5f6630725f3062326375723137795f37396230316332367d0a
 ```
 
@@ -323,19 +323,19 @@ Every file gets a flag. The SOC analyst saw one image been sent back and forth b
 The challenge involves an image file with hidden data. We use `binwalk` to analyze it:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk hideme
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk hideme
 ```
 
 The output reveals a zip archive embedded in the image. We extract it:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e hideme
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e hideme
 ```
 
 This creates `_hideme.extracted` containing a zip file (e.g., `12345.zip`). Unzipping it:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF/_hideme.extracted$ unzip 12345.zip
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_hideme.extracted$ unzip 12345.zip
 ```
 
 The zip contains an image (e.g., `flag_image.jpg`). Opening the image displays the flag directly:
@@ -359,13 +359,13 @@ This image passes LSB statistical analysis, but we can't help but think there mu
 The challenge name **MSB** suggests Most Significant Bit steganography, unlike common LSB techniques. We download `sigBits.py` and the Pillow library, then run:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ python3 sigBits.py -t=msb Ninja-and-Prince-Genji-Ukiyoe-Utagawa-Kunisada.flag.png
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ python3 sigBits.py -t=msb Ninja-and-Prince-Genji-Ukiyoe-Utagawa-Kunisada.flag.png
 ```
 
 This outputs a file (e.g., `output.png`). We search the output for the flag:
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ grep -i "picoCTF" output.png
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ grep -i "picoCTF" output.png
 ```
 
 The grep command reveals the flag embedded in the output image:
@@ -432,7 +432,7 @@ This reveals a GitHub profile: `https://github.com/sakurasnowangelaiko`. Browsin
 
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ gpg publickey
+$:~/CSOC/INFOSEC/Week1/TRYHACKME$ gpg publickey
 gpg: WARNING: no command supplied. Trying to guess what you mean ...
 pub   rsa3072 2021-01-23 [SC] [expires: 2023-01-22]
       A6519F273BF88E9126B0F4C5ECDD0FD294110450
@@ -492,7 +492,9 @@ Checking out outher transactions, i find out attackers was also exhanging Tether
 What is the BSSID for the attacker’s Home WiFi?
 
 ##### Solution:
-Wait...
+They have made some changes (removed a queestion along with a hint of an image) since the hint has been removed, i will have to go the unofficial way to solve it and i didn't do it.
+
+**`Not Done`**
 
 ---
 
@@ -508,13 +510,13 @@ The image matches the lounge at Tokyo Haneda Airport (HND). The airport code is:
 
 **`HND`**
 
-Another tweet includes a map showing a lake during the attacker’s flight. Using Google image search and Google Earth i found the name of the lake:
+Another tweet includes a map showing a lake during the attacker’s flight. Using Google image search i found the name 'Yamagata' (i was looking for the S shaped island) then from Google Earth i found the name of the lake:
 
 **`Lake Inawashiro`**
 
-The BSSID from Task 6 was located in Hirosaki, Japan, suggesting it’s the attacker’s home city:
+We need to first get the BSSID to get the home and since the hint has been removed, i will have to go the unofficial way to solve it and i didn't do it.
 
-**`Hirosaki`**
+**`Not Done`**
 
 
 ---
