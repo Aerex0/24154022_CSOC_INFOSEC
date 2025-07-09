@@ -380,7 +380,7 @@ The grep command reveals the flag embedded in the output image:
 
 ##### Writeup:
 
-The Sakura Room, created by OSINT Dojo on TryHackMe, is a beginner-friendly OSINT challenge designed to test various open-source intelligence techniques. The scenario involves a cyberattack on OSINT Dojo, with an image (`sakurapwnedletter.svg`) left by the attacker as a clue. The goal is to identify the attacker through passive OSINT methods. Below are the solutions to key tasks.
+The Sakura Room, created by OSINT Dojo on TryHackMe, is a beginner-friendly OSINT challenge designed to test various open-source intelligence techniques.
 
 ---
 
