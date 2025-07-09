@@ -76,10 +76,10 @@ Extracting `4_c.jpg` produces `136DA.zip` and `flag.txt`. Reading `flag.txt`:
 
 ```shell
 $:~/CSOC/INFOSEC/Week1/PICO_CTF/_dolls.jpg.extracted/base_images/_2_c.jpg.extracted/base_images/_3_c.jpg.extracted/base_images/_4_c.jpg.extracted$ cat flag.txt 
-picoCTF{96fac089316e094d41ea046900197662}
+picoCTF{96fac089316e094d41ea046900197662} 
 ```
 
-Thus, the flag is **`picoCTF{96fac089316e094d41ea046900197662}`**.
+Thus, there you get the flag picoCTF{96fac089316e094d41ea046900197662} .
 
 ---
 
@@ -93,30 +93,27 @@ I've hidden a flag in this file. Can you find it?
 
 ##### Writeup:
 
-The file is a `.pptm` (PowerPoint with macros), suggesting hidden data in its structure or macros. Since `.pptm` files are zip archives, we rename it to `.zip` and extract its contents:
+As usual i used file command on it and it was a pptm file. This is the first time i have come across one in a CTF so i searched on google what is a pptm and i realized it's a PowerPoint Macro-Enabled file (macro is a feature that let you write code to automate tasks. So i searched for a linux tool to open a powerpoint, i came across libreoffice but cheking the file didn't give me anything. I searched more about file format of pptm and found this-
+*Files generated with office Open XML file format is a collection of XML files along with other files that provide links between all the constituent files. This collection is actually a compressed archive that can be extracted to view its contents. To do so, just rename the PPTM file extension with zip and extract it for observing its contents.*
+I unzipped the file.
 
 ```shell
 $:~/CSOC/INFOSEC/Week1/PICO_CTF$ mv Forensics\ is\ fun.pptm a.zip
 $:~/CSOC/INFOSEC/Week1/PICO_CTF$ unzip a.zip
 ```
 
-This extracts numerous files, including `ppt/slideMasters/hidden`. We inspect it with `strings`:
+This extracts numerous files, and luckily after extraction there was suspicious named `ppt/slideMasters/hidden` in front of my eye. I inspect it with `cat`:
 
 ```shell
-$:~/CSOC/INFOSEC/Week1/PICO_CTF$ strings ppt/slideMasters/hidden 
-ZmxhZzoGcG1jb0NURntEMWRfYV9rZXJCM3X3BwdHNhfQ
+$:~/CSOC/INFOSEC/Week1/PICO_CTF$ cat ppt/slideMasters/hidden 
+Z m x h Z z o g c G l j b 0 N U R n t E M W R f d V 9 r b j B 3 X 3 B w d H N f c l 9 6 M X A 1 f Q  
 ```
 
-The string is base64-encoded. Decoding it:
+The string is base64-encoded. Decoding it with https://www.base64decode.org:
 
-```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/PICO_CTF$ echo "ZmxhZzoGcG1jb0NURntEMWRfYV9rZXJCM3X3BwdHNhfQ" | base64 -d
-flag:picoCTF{D1d_a_kerB3w_pptsa}
-```
 
-The decoded string reveals the flag: **`picoCTF{D1d_a_kerB3w_pptsa}`**.
+The decoded string reveals the flag: **`flag: picoCTF{D1d_u_kn0w_ppts_r_z1p5}`**.
 
-**Note**: The initial attempt to decode with `strings ppt/slideMasters/hidden | base64 -d` failed due to whitespace or formatting. Cleaning the string or decoding directly resolved the issue.
 
 ---
 
@@ -159,8 +156,6 @@ p i c o C T F { 3 n h 4 n c 3 d _ 2 4 3 7 4 6 7 5 }
 
 Removing spaces gives the flag: **`picoCTF{3nh4nc3d_24374675}`**.
 
-**Note**: The text uses a tiny font (0.00352781px), making it invisible when viewing the SVG, but the flag is embedded in the XML.
-
 ---
 
 ### advanced-potion-making
@@ -187,9 +182,8 @@ $:~/CSOC/INFOSEC/Week1/PICO_CTF$ hexedit advanced-potion-making
 
 We set the first 8 bytes to `89 50 4E 47 0D 0A 1A 0A`. Saving the file restores the PNG, revealing a red image. We use an online CTF tool like [Aperisolve](https://www.aperisolve.com/) to analyze for steganography (e.g., LSB or color channel extraction), which reveals the flag:
 
-**`picoCTF{p0t10n_m4st3ry_1s_c00l}`**
+**`picoCTF{w1z4rdry}`**
 
-**Note**: The red image suggests steganography in the color channels. The tool likely extracted the flag from the red channel or LSB.
 
 ---
 
@@ -203,7 +197,7 @@ This file was found among some files marked confidential but my pdf reader canno
 
 ##### Writeup:
 
-The file `Flag.pdf` doesn’t open as a PDF, suggesting it’s misnamed. We treat it as a shell script:
+The file `Flag.pdf` doesn’t open as a PDF, suggesting it’s misnamed. I treat it as a shell script:
 
 ```shell
 $:~/CSOC/INFOSEC/Week1/PICO_CTF$ cp Flag.pdf Flag.sh
@@ -244,7 +238,7 @@ $:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag
 flag: lzip compressed data
 ```
 
-Since `binwalk` fails to extract lzip, we use:
+Since `binwalk` fails to extract lzip, I use:
 
 ```shell
 $:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ lzip -d -k flag
@@ -289,15 +283,16 @@ This creates `flag3.out`, which is XZ compressed:
 ```shell
 $:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ file flag3.out
 flag3.out: XZ compressed data
-$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag3.out flag4.xz
-$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ xz -d -k flag4.xz
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ mv flag3.out flag3.xz
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ xz -d -k flag3.xz
 ```
 
-The final `flag4` is ASCII text containing a hex string:
+The final `flag3` is ASCII text containing a hex string:
 
 ```shell
-$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ cat flag4
-7069636f4354467b66316c656e406d335f6d406e3170756c407431306e5f6630725f3062326375723137795f37396230316332367d0a
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_flag.extracted/_64.extracted$ cat flag3
+7069636f4354467b66316c656e406d335f6d406e3170756c407431306e5f
+6630725f3062326375723137795f37396230316332367d0a
 ```
 
 Converting from hex using [CyberChef](https://gchq.github.io/CyberChef/):
@@ -332,17 +327,17 @@ The output reveals a zip archive embedded in the image. We extract it:
 $:~/CSOC/INFOSEC/Week1/PICO_CTF$ binwalk -e hideme
 ```
 
-This creates `_hideme.extracted` containing a zip file (e.g., `12345.zip`). Unzipping it:
+This creates `_hideme.extracted` containing a zip file . Unzipping it:
 
 ```shell
-$:~/CSOC/INFOSEC/Week1/PICO_CTF/_hideme.extracted$ unzip 12345.zip
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/_hideme.extracted$ unzip 00000077.zip
 ```
 
-The zip contains an image (e.g., `flag_image.jpg`). Opening the image displays the flag directly:
+The zip contains an image flag.png . Opening the image displays the flag directly:
 
-**`picoCTF{h1d3n_1m4g3_f1l3}`**
+**`picoCTF{H1dd1ng_An_imag3_w1thin_@n_ima9e_ad9f6587}`**
 
-**Note**: The flag was visible on the extracted image, likely embedded as text or a QR code.
+
 
 ---
 
@@ -362,15 +357,15 @@ The challenge name **MSB** suggests Most Significant Bit steganography, unlike c
 $:~/CSOC/INFOSEC/Week1/PICO_CTF$ python3 sigBits.py -t=msb Ninja-and-Prince-Genji-Ukiyoe-Utagawa-Kunisada.flag.png
 ```
 
-This outputs a file (e.g., `output.png`). We search the output for the flag:
+This outputs a file 'outputSB.txt'. We search the output for the flag using cat or grep directly but since the file contains a single large line without any spaces it doesn't show the flag so either i have to do it manually( which is very time consuming) or use this command:
 
 ```shell
-$:~/CSOC/INFOSEC/Week1/PICO_CTF$ grep -i "picoCTF" output.png
+$:~/CSOC/INFOSEC/Week1/PICO_CTF/msb cat outputSB.txt | grep -o -E "picoCTF.{0,50}"
 ```
 
 The grep command reveals the flag embedded in the output image:
 
-**`picoCTF{m0st_51gn1f1c4nt_b17_51mpl3}`**
+**`picoCTF{15_y0ur_que57_qu1x071c_0r_h3r01c_ee3cb4d8}`**
 
 **Note**: The `sigBits.py` script extracts MSB data, and the flag was likely embedded as text or a visible element in the output image.
 
@@ -409,7 +404,7 @@ What username does the attacker go by?
 The provided image is an SVG file. After downloading it as an svg file i inspected it with exiftool.
 
 ```shell
-aerex@localhost:~/CSOC/INFOSEC/Week1/TRYHACKME$ exiftool sakurapwnedletter.svg
+$:~/CSOC/INFOSEC/Week1/TRYHACKME$ exiftool sakurapwnedletter.svg
 ```
 
 The file’s metadata includes a file path: `/home/SakuraSnowAngelAiko/Desktop/pwnedletter.png`, revealing the attacker’s username:
