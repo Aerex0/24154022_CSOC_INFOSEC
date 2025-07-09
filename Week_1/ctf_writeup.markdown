@@ -425,7 +425,7 @@ The file’s metadata includes a file path: `/home/SakuraSnowAngelAiko/Desktop/p
 What is the full email address used by the attacker?
 
 ##### Solution:
-Using the username `SakuraSnowAngelAiko`, we search Google for associated accounts:
+Using the username `SakuraSnowAngelAiko`, we search Google for associated accounts using sherlock :
 
 This reveals a GitHub profile: `https://github.com/sakurasnowangelaiko`. Browsing the repositories, I find a `PGP` repository containing a `publickey` file. We can either use gpg on the PGP file or use an online PGP decoder to get the details which consist the email of the attacker.
 
